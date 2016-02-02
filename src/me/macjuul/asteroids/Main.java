@@ -3,6 +3,7 @@ package me.macjuul.asteroids;
 import java.awt.Dimension;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
+import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
@@ -26,7 +27,8 @@ public class Main {
         URL iconURL = Main.class.getResource("/res/icon.png");
         ImageIcon icon = new ImageIcon(iconURL);
 
-        window.setMinimumSize(new Dimension(WIDTH, HEIGHT));
+        window.setMaximumSize(Toolkit.getDefaultToolkit().getScreenSize());
+        window.setMinimumSize(new Dimension((int) (WIDTH / 1.2), (int) (HEIGHT / 1.2)));
         window.setLocationRelativeTo(null);
         window.setIconImage(icon.getImage());
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,18 +47,10 @@ public class Main {
         
         /* Test stuffs */
         
-        Util.playSound("music.mp3");
-        
-        Util.setTimeout(1000L, new Runnable() {
-            public void run() {
-                Util.playSound("explosion.mp3");
-            }
-        });
-        
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
             @Override
             public boolean dispatchKeyEvent(KeyEvent e) {
-                if(e.getKeyCode() == 10) {
+                if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
                     switch(e.getID()) {
                     case KeyEvent.KEY_PRESSED:
                         System.out.print("Down");
