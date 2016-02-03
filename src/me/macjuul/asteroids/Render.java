@@ -1,10 +1,12 @@
 package me.macjuul.asteroids;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 
 import javafx.embed.swing.JFXPanel;
 
@@ -41,5 +43,11 @@ public class Render extends JFXPanel {
         BufferedImage ship = Util.getBufferedImage("spaceship/default.png"); 
         ship = ship.getSubimage(Main.shipFrame, 0, 100, 136);
         gfx.drawImage(ship, Spaceship.position, Main.HEIGHT - 260, null);
+        
+        for(int b : GameHandler.bullets.keySet()) {
+        	HashMap<String, Object> bullet = GameHandler.bullets.get(b);
+        	gfx.setColor(Color.RED);
+        	gfx.fillRect((int) bullet.get("position"), (int) bullet.get("y"), 3, 10);
+        }
     }
 }
