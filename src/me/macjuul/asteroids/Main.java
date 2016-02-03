@@ -1,5 +1,6 @@
 package me.macjuul.asteroids;
 
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.KeyEventDispatcher;
@@ -9,7 +10,10 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -26,6 +30,7 @@ public class Main {
     public static int frame = 0;
     public static int shipFrame = 0;
     public static HashSet<Integer> keys = new HashSet<Integer>();
+    private static Boolean mayShoot = true;
 
     public static void main(String[] args) throws InterruptedException, UnsupportedAudioFileException, IOException, LineUnavailableException {
     	
@@ -46,13 +51,18 @@ public class Main {
         window.add(new Render());
         window.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-    	//Create the menu bar.
     	menuBar = new JMenuBar();
 
-    	//Build the first menu.
-    	menu = new JMenu("A Menu");
-    	menu.setMnemonic(KeyEvent.VK_A);
-    	menu.getAccessibleContext().setAccessibleDescription("The only menu in this program that has menu items");
+    	menu = new JMenu("Game");
+    	menu.getAccessibleContext().setAccessibleDescription("Game menu");
+    	menuBar.add(menu);
+    	
+    	menu = new JMenu("Settings");
+    	menu.getAccessibleContext().setAccessibleDescription("Settings menu");
+    	menuBar.add(menu);
+    	
+    	menu = new JMenu("About");
+    	menu.getAccessibleContext().setAccessibleDescription("About Asteroids");
     	menuBar.add(menu);
     	
     	window.setJMenuBar(menuBar);
@@ -66,6 +76,8 @@ public class Main {
                 Spaceship.position = Main.WIDTH / 2 - 50;
             }
         });
+    	
+    	window.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
     	
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
             @Override
@@ -101,13 +113,28 @@ public class Main {
                 if(!Spaceship.dead){
                 	int velocitySpeed = WIDTH / 30;
                 	
+                	// Movement
                 	if(keys.contains(KeyEvent.VK_LEFT) || keys.contains(KeyEvent.VK_A)) {
                 		Spaceship.velocity -= velocitySpeed;
                 	}
+                	
             		if(keys.contains(KeyEvent.VK_RIGHT) || keys.contains(KeyEvent.VK_D)) {
             			Spaceship.velocity  += velocitySpeed;
                 	}
+            		// Shooting
+            		if(keys.contains(KeyEvent.VK_SPACE) || keys.contains(KeyEvent.VK_UP)) {
+            			if(mayShoot) {
+            				Spaceship.shoot();
+            				mayShoot = false;
+            				Util.setTimeout(650L, new Runnable() {
+            					@Override public void run() {
+            						mayShoot = true;
+            					}
+            				});
+            			}
+            		}
             		
+            		// Collision
             		if(Spaceship.position < 0 + wallWidth) {
                         Spaceship.velocity = 0;
                         Spaceship.position = wallWidth;
@@ -115,6 +142,18 @@ public class Main {
                         Spaceship.position = WIDTH - wallWidth - Spaceship.width;
                         Spaceship.velocity = 0;
                     }
+                }
+                
+                Iterator<Integer> bit = GameHandler.bullets.keySet().iterator();
+                
+                while(bit.hasNext()) {
+                	HashMap<String, Object> bullet = GameHandler.bullets.get(bit.next());
+                	int y = (int) bullet.get("y");
+                	bullet.put("y", y - 7);
+                	
+                	if(y < 0) {
+                		bit.remove();
+                	}
                 }
                 
                 window.repaint();
