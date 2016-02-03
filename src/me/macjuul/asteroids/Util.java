@@ -74,7 +74,14 @@ public class Util {
         scheduler.scheduleAtFixedRate(csr, 0, delay, TimeUnit.MILLISECONDS);
     }
     
-    public static void playAnimation(AnimationType type) {
+    /**
+     * Play an animation on certain objects.
+     * Animation parameters:
+     * ASTEROID_EXPLODE - int AsteroidID
+     * @param type
+     * @param args
+     */
+    public static void playAnimation(AnimationType type, Object... args) {
 		switch(type) {
 		case SHIP_FLY_IN:
 			break;
