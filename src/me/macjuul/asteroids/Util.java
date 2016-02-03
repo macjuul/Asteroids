@@ -73,4 +73,19 @@ public class Util {
         
         scheduler.scheduleAtFixedRate(csr, 0, delay, TimeUnit.MILLISECONDS);
     }
+    
+    public static void playAnimation(AnimationType type) {
+		switch(type) {
+		case SHIP_FLY_IN:
+			break;
+		case ASTEROID_EXPLODE:
+			break;
+		case SPACESHIP_EXPLODE:
+			break;
+		case DEATH_MENU_FADE_IN:
+			break;
+		case DEATH_MENU_FADE_OUT:
+			break;
+		}
+	}
 }
