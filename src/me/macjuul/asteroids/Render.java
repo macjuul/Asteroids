@@ -14,9 +14,8 @@ public class Render extends JFXPanel {
     @Override
     public void paint(Graphics g) {
         Graphics2D gfx = (Graphics2D) g;
-        Image space = Util.getImage("space.png");
         gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        
+        Image space = Util.getImage("space.png");
         int spaceWidth = space.getWidth(null);
         int spaceHeight = space.getHeight(null);
         int yStart = (int) (((Main.frame * 1.5) % spaceHeight) - spaceHeight);
@@ -41,6 +40,6 @@ public class Render extends JFXPanel {
         
         BufferedImage ship = Util.getBufferedImage("spaceship/default.png"); 
         ship = ship.getSubimage(Main.shipFrame, 0, 100, 136);
-        gfx.drawImage(ship, Spaceship.position, Main.HEIGHT - 300, null);
+        gfx.drawImage(ship, Spaceship.position, Main.HEIGHT - 260, null);
     }
 }
