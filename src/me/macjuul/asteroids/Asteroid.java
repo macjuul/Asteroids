@@ -16,6 +16,9 @@ public class Asteroid {
 	private boolean rotationDir;
 	private Image asteroidImage;
 	
+	private double height;
+	private double width;
+	
 	public Asteroid() {
 		this.y = -100;
 		this.size = Util.randomBetween(0.25, 0.55);
@@ -28,6 +31,8 @@ public class Asteroid {
 		double asteroidHeight = sprites.getHeight();
 		
 		this.x = Util.randomBetween((int) (Asteroids.WALL_WIDTH + (asteroidWidth / 2)), (int) (Asteroids.WIDTH - Asteroids.WALL_WIDTH - (asteroidWidth / 2)));
+		this.width = asteroidWidth;
+		this.height = asteroidHeight;
 		
 		PixelReader reader = sprites.getPixelReader();
 		WritableImage asteroidImage = new WritableImage(reader, (int) (asteroidWidth * Util.randomBetween(0, 3)), 0, (int) asteroidWidth, (int) asteroidHeight);
@@ -73,5 +78,13 @@ public class Asteroid {
 	
 	public boolean rotationDir() {
 		return rotationDir;
+	}
+	
+	public double getWidth() {
+	    return this.width;
+	}
+	
+	public double getHeight() {
+	    return this.height;
 	}
 }

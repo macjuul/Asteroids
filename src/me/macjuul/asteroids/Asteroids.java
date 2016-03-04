@@ -15,7 +15,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import me.macjuul.asteroids.Spaceship.Spaceship;
+import me.macjuul.asteroids.spaceship.Spaceship;
 import me.macjuul.asteroids.util.Util;
 
 public class Asteroids extends Application {
@@ -111,8 +111,6 @@ public class Asteroids extends Application {
 		
 		// Open the window
 		window.show();
-		
-		window.setFullScreen(true);
 		
 		window.setOnCloseRequest(e -> {
 			Platform.exit();

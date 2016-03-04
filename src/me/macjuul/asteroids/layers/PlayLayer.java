@@ -1,31 +1,40 @@
 package me.macjuul.asteroids.layers;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import me.macjuul.asteroids.Asteroid;
 import me.macjuul.asteroids.Asteroids;
 import me.macjuul.asteroids.Explosion;
 import me.macjuul.asteroids.Game;
 import me.macjuul.asteroids.GameEvents;
-import me.macjuul.asteroids.Spaceship.Spaceship;
+import me.macjuul.asteroids.spaceship.Spaceship;
 import me.macjuul.asteroids.util.Util;
 
 public class PlayLayer implements Layer {
 	private int vel;
 	private Image ship;
 	private Image blt;
+	private Font statFont;
+	
+	private static Set<MediaPlayer> activePlayers = new HashSet<MediaPlayer>();
     
 	@Override
 	public void init() {
     	this.ship = Util.getImage("spaceship/" + Asteroids.spaceship.getCurrentSkin().toString().toLowerCase() + ".png");
     	this.blt = Util.getImage("bullet.png");
+    	this.statFont = Font.loadFont(Util.getResource("SpaceFont.ttf").toString(), 25);
     	
     	Asteroids.score = 0;
     	
@@ -105,28 +114,59 @@ public class PlayLayer implements Layer {
         while(bullet.hasNext()) {
         	ArrayList<Integer> b = bullet.next();
         	int x = b.get(0);
-        	int z = b.get(1);
+        	int y = b.get(1);
         	int angle = b.get(2);
+        	int dead = b.get(3);
         	
-        	if(angle == 0) {
-        		angle = 345;
-        		x -= 3;
-        	} else if(angle == 1) {
-        		angle = 0;
+        	if(dead == 1) {
+        	    bullet.remove();
         	} else {
-        		angle = 15;
-        		x += 3;
-        	}
-        	
-        	z -= 10;
-        	
-        	b.set(0, x);
-        	b.set(1, z);
-
-        	Util.drawRotatedImage(gfx, blt, angle, x, z, 4, 12);
-        	
-        	if(z < -10) {
-        		bullet.remove();
+            	if(angle == 0) {
+            		angle = 345;
+            		x -= 3;
+            	} else if(angle == 1) {
+            		angle = 0;
+            	} else {
+            		angle = 15;
+            		x += 3;
+            	}
+            	
+            	y -= 10;
+            	
+            	b.set(0, x);
+            	b.set(1, y);
+    
+            	Util.drawRotatedImage(gfx, blt, angle, x, y, 4, 12);
+            	
+            	Iterator<Asteroid> i = Game.asteroids.iterator();
+            	
+                while(i.hasNext()) {
+                    Asteroid a = i.next();
+                    
+                    double x1 = a.getX();
+                    double y1 = a.getY();
+                    double x2 = x + 2;
+                    double y2 = y + 6;
+                    
+                    double distance = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+                    double dist = a.getWidth() * a.getSize();
+                    
+                    if(distance < dist) {
+                        Asteroids.score++;
+                        
+                        i.remove();
+                        MediaPlayer p = new MediaPlayer(new Media(Util.getResource("asteroid_break.mp3").toString()));
+                        new Explosion(x, y, (1 / a.getSize()) + Asteroids.render.asteroidSpeedModifier, a.getSize() * 2.5);
+                        b.set(3, 1);
+                        
+                        activePlayers.add(p);
+                        p.setOnEndOfMedia(() -> {
+                            p.dispose();
+                            activePlayers.remove(p);
+                        });
+                        p.play();
+                    }
+                }
         	}
         }
 
@@ -139,11 +179,6 @@ public class PlayLayer implements Layer {
         	
         	int y = a.getY();
         	y += (1 / scale) + Asteroids.render.asteroidSpeedModifier;
-        	
-        	if(y > 300) {
-        		i.remove();
-        		new Explosion(x, y, (1 / scale) + Asteroids.render.asteroidSpeedModifier, scale * 2.5);
-        	}
         	
         	if(y > Asteroids.HEIGHT + 100) {
         		i.remove();
@@ -191,8 +226,8 @@ public class PlayLayer implements Layer {
         Util.drawRotatedImage(gfx, spaceship, vel, Game.xStart + Spaceship.position, Asteroids.CANVAS_HEIGHT - Spaceship.y);
 	
         gfx.setFill(Color.WHITE);
-        gfx.setFont(Asteroids.SPACE_FONT);
-        gfx.fillText("Score: " + Asteroids.score, Asteroids.WALL_WIDTH + 20, Asteroids.HEIGHT - 30);
+        gfx.setFont(statFont);
+        gfx.fillText("Score: " + Asteroids.score, Asteroids.WALL_WIDTH + 20, Asteroids.HEIGHT - 35);
 	}
 	
 	public void onClick(double x, double y) {}

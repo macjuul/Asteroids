@@ -22,7 +22,7 @@ public class MenuLayer implements Layer {
 	private double opacity = 1;
 	private boolean fade = false;
 	private MediaPlayer music;
-	private double musicVolume = 0.3;
+	private double musicVolume = 0; // 0.3
 	
 	@Override
 	public void init() {
