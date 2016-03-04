@@ -149,14 +149,14 @@ public class PlayLayer implements Layer {
                     double y2 = y + 6;
                     
                     double distance = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-                    double dist = a.getWidth() * a.getSize();
+                    double dist = a.getWidth() * a.getSize() - 10;
                     
                     if(distance < dist) {
                         Asteroids.score++;
                         
                         i.remove();
                         MediaPlayer p = new MediaPlayer(new Media(Util.getResource("asteroid_break.mp3").toString()));
-                        new Explosion(x, y, (1 / a.getSize()) + Asteroids.render.asteroidSpeedModifier, a.getSize() * 2.5);
+                        new Explosion((int) x1, (int) y1, (1 / a.getSize()) + Asteroids.render.asteroidSpeedModifier, a.getSize() * 2.5);
                         b.set(3, 1);
                         
                         activePlayers.add(p);
@@ -233,7 +233,11 @@ public class PlayLayer implements Layer {
 	public void onClick(double x, double y) {}
 	
 	private void asteroidLoop() {
-		int rand = Util.randomBetween(1000, 1500);
+		int min = (int) (1000 - (Asteroids.frame / 7));
+		int max = (int) (1500 - (Asteroids.frame / 7));
+		if(min < 375) min = 500;
+		if(max < 750) max = 1000;
+		int rand = Util.randomBetween(min, max);
 		Util.setTimeout(Long.valueOf(rand), () -> {
 			if(Asteroids.gameActive) {
 				spawnAsteroid();

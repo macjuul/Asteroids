@@ -1,8 +1,5 @@
 package me.macjuul.asteroids.util;
 
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.Random;
 import java.util.concurrent.Executors;
@@ -39,14 +36,6 @@ public class Util {
     
     public static boolean isKeyDown(KeyCode c) {
     	return Asteroids.keys.contains(c);
-    }
-    
-    public static BufferedImage getRotatedImage(BufferedImage bufferedImage, double d) {
-        AffineTransform transform = new AffineTransform();
-        transform.rotate(Math.toRadians(d), 1d * bufferedImage.getWidth() / 2, 1d * bufferedImage.getHeight() / 2);
-        AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
-        bufferedImage = op.filter(bufferedImage, null);
-        return bufferedImage;
     }
     
     private static void rotate(GraphicsContext gc, double angle, double px, double py) {

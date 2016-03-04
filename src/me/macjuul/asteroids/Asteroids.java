@@ -9,6 +9,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.media.Media;
@@ -51,7 +52,7 @@ public class Asteroids extends Application {
 		launch(args);
 	}
 	
-	private static void updateDimensions(Boolean updateCanvas) {
+	public static void updateDimensions(Boolean updateCanvas) {
 		CANVAS_WIDTH = WIDTH - (WALL_WIDTH * 2);
 		CANVAS_HEIGHT = HEIGHT;
 		
@@ -59,6 +60,24 @@ public class Asteroids extends Application {
 			Canvas cvs = control.getCanvas(1);
 			cvs.setWidth(Asteroids.WIDTH);
 			cvs.setHeight(Asteroids.HEIGHT);
+			
+			Image wall = Util.getImage("side_wall.png");
+			
+			Canvas leftWall =  control.getLeftWall();
+			Canvas rightWall =  control.getRightWall();
+	    	
+	    	GraphicsContext lw = leftWall.getGraphicsContext2D();
+	    	GraphicsContext rw = rightWall.getGraphicsContext2D();
+	    	
+	    	leftWall.setHeight(Asteroids.HEIGHT);
+	    	rightWall.setHeight(Asteroids.HEIGHT);
+	    	
+	    	double wall_height = (((Asteroids.WALL_WIDTH * 100) / wall.getWidth()) / 100) * wall.getHeight();
+	    	
+	    	for(int h = 0; h < Asteroids.HEIGHT; h += wall_height) {
+	    		lw.drawImage(wall, 0, wall_height * h, Asteroids.WALL_WIDTH, wall_height);
+	        	Util.drawRotatedImage(rw, wall, 180, 0, wall_height * h, Asteroids.WALL_WIDTH, wall_height);
+	    	}
 		}
 	}
 
@@ -70,8 +89,6 @@ public class Asteroids extends Application {
 		music = new MediaPlayer(new Media(Util.getResource("music.mp3").toString()));
 		breakSound = new MediaPlayer(new Media(Util.getResource("asteroid_break.mp3").toString()));
 		explosionSound = new MediaPlayer(new Media(Util.getResource("explosion.mp3").toString()));
-		
-		updateDimensions(false);
 		
 		window.setTitle("Asteroids: Space adventure - By macjuul");
 		

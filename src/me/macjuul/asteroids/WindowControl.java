@@ -9,7 +9,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
@@ -64,14 +63,6 @@ public class WindowControl extends BorderPane implements Initializable {
     	left_wall.setHeight(Asteroids.HEIGHT);
     	right_wall.setHeight(Asteroids.HEIGHT);
     	
-    	Image wall = Util.getImage("side_wall.png");
-    	
-    	GraphicsContext lw = left_wall.getGraphicsContext2D();
-    	GraphicsContext rw = right_wall.getGraphicsContext2D();
-    	
-    	lw.drawImage(wall, 0, 0, Asteroids.WALL_WIDTH, 700);
-    	rw.drawImage(wall, 0, 0, Asteroids.WALL_WIDTH, 700);
-    	
     	cvs1.setWidth(Asteroids.WIDTH);
     	cvs1.setHeight(Asteroids.HEIGHT);
     	cvs2.setWidth(Asteroids.WIDTH);
@@ -93,6 +84,8 @@ public class WindowControl extends BorderPane implements Initializable {
         Asteroids.window.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
         	Asteroids.keys.remove(e.getCode());
         });
+        
+        Asteroids.updateDimensions(true);
     }
     
     public Canvas getCanvas(int n) {
@@ -101,6 +94,14 @@ public class WindowControl extends BorderPane implements Initializable {
     	case 3: return cvs3;
     	}
 		return cvs1;
+    }
+    
+    public Canvas getLeftWall() {
+    	return left_wall;
+    }
+    
+    public Canvas getRightWall() {
+    	return right_wall;
     }
     
     public GraphicsContext getGraphics() {
